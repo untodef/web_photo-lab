@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+{% load static %}
+<style>
+  :root {
+    --fonts-path: '{% static "fonts/" %}';
+  }
+</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://myfonts.ru/myfonts?fonts=ermilov" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <header class="header">
+        <div class="wrapper">
+
+            <div class="header__wrapper">
+
+                <div class="header__logo">
+                    <a href="{% url 'index' %}" class="header__logo-link">
+                        <img src="{% static 'img/svg/logo.svg' %}" alt="ПРоявка та Сканування Фотоплівок" class="header__logo-pic">
+                    </a>
+                </div>
+
+                <nav class="header__nav">
+                    <ul class="header__list">
+                        <li class="header__item">
+                            <a href="{% url 'store' %}" class="header__link">Матеріали</a>
+                        </li>
+                        <li class="header__item">
+                            <a href="{% url 'order' %}" class="header__link">Проявка та друк</a>
+                        </li>
+                        <li class="header__item">
+                            <a href="{% url 'contacts' %}" class="header__link">Контакти</a>
+                        </li>
+                    </ul>
+
+                </nav>
+
+                <nav class="header__nav">
+                    <ul class="header__icons">
+                        <li class="header__item">
+                            <a href="#!" class="header__link">
+                                <img src="{% static 'img/svg/search.svg' %}" alt="" class="header__icon-pic">
+                            </a>
+                        </li>
+                        <li class="header__item">
+                            <a href="#!" class="header__link">
+                                <img src="{% static 'img/svg/cart.svg' %}" alt="" class="header__icon-cart">
+                            </a>
+                        </li>
+                        <li class="header__item">
+                            <a href="{% url 'account' %}" class="header__link">
+                                <img src="{% static 'img/svg/account.svg' %}" alt="" class="header__icon-account">
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+            </div>
+
+        </div>
+    </header>
+
+
+    <main class="main">
+
+        <section class="store">
+
+            <div class="store__title-wrapper">
+                <h1 class="store__title">
+                    Матеріали для Фотографії
+                </h1>
+            </div>
+
+            <div class="wrapper__store">
+                <div class="store__sort">
+                    <button class="sorting-btn" id="latest" onclick="sortProducts('latest')">Найновіші надходження</button>
+                    <button class="sorting-btn" id="ascending" onclick="sortProducts('ascending')">За зростанням ціни</button>
+                    <button class="sorting-btn" id="descending" onclick="sortProducts('descending')">За спаданням ціни</button>
+                </div>
+                <p class="sort-result">
+                    Знайдено Х результатів
+                </p>
+            </div>
+
+            <div class="store__filter-products">
+
+                <div class="store__filter">
+                    <div class="filter__film-type">
+                        <p class="filter__film-type__title">
+                            Тип плівки
+                        </p>
+                        <div class="film-type">
+                          <button class="film-type-btn" id="thirty-five-mm">35 мм</button>
+                          <button class="film-type-btn" id="hundred-twenty-mm">120 мм</button>
+                        </div>
+                        <div class="film-type">
+                          <button class="film-type-btn" id="polaroid">картриджі для Polaroid</button>
+                        </div>
+                    </div>
+
+                    <div class="filter__color">
+                        <p class="filter__color__title">
+                            Колірність
+                        </p>
+                        <div class="color-filter">
+                            <button class="color-btn" id="colorful"></button>
+                            <button class="color-btn" id="bw"></button>
+                        </div>
+                    </div>
+
+                    <div class="filter__brand">
+                        <p class="filter__brand__title">
+                            Виробник
+                        </p>
+                        <div class="brand-filter">
+                          <select class="brand-select" id="brand-select">
+                            <option value="">Всі бренди</option>
+                            <option value="Kodak">Kodak</option>
+                            <option value="Fuji">Fuji</option>
+                            <option value="Ilford">Ilford</option>
+                            <option value="CineStill">CineStill</option>
+                          </select>
+                          <button class="brand-filter__clear">&#10005;</button>
+                        </div>
+                    </div>
+
+                    <div class="filter__price">
+                        <p class="filter__price__title">
+                            Ціна
+                        </p>
+                        <div class="price-filter">
+                          <input class="price-input" type="number" id="min-price" placeholder="XXX₴" min="0" step="1">
+                          <span class="price-dash">-</span>
+                          <input class="price-input" type="number" id="max-price" placeholder="XXX₴" min="0" step="1">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="products__wrapper">
+                    {% load static %}
+                    <div id="store-products" data-static-url="{% static '' %}" data-img-url="{% static 'img/' %}">
+                    </div>
+                </div>
+
+
+            </div>
+
+        </section>
+
+    </main>
+    <div class="cart-popup">
+      <div class="cart-items-container"></div>
+      <div class="cart-total"></div>
+      <button class="cart-popup-close">Закрити</button>
+    </div>
+    <script src="{% static 'js/scripts.js' %}"></script>
+{% endblock %}
+</html>

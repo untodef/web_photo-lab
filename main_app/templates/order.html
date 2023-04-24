@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+{% load static %}
+<style>
+  :root {
+    --fonts-path: '{% static "fonts/" %}';
+  }
+</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://myfonts.ru/myfonts?fonts=ermilov" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <header class="header">
+        <div class="wrapper">
+
+            <div class="header__wrapper">
+
+                <div class="header__logo">
+                    <a href="{% url 'index' %}" class="header__logo-link">
+                        <img src="{% static 'img/svg/logo.svg' %}" alt="ПРоявка та Сканування Фотоплівок" class="header__logo-pic">
+                    </a>
+                </div>
+
+                <nav class="header__nav">
+                    <ul class="header__list">
+                        <li class="header__item">
+                            <a href="{% url 'store' %}" class="header__link">Матеріали</a>
+                        </li>
+                        <li class="header__item">
+                            <a href="{% url 'order' %}" class="header__link">Проявка та друк</a>
+                        </li>
+                        <li class="header__item">
+                            <a href="{% url 'contacts' %}" class="header__link">Контакти</a>
+                        </li>
+                    </ul>
+
+                </nav>
+
+                <nav class="header__nav">
+                    <ul class="header__icons">
+                        <li class="header__item">
+                            <a href="#!" class="header__link">
+                                <img src="{% static 'img/svg/search.svg' %}" alt="" class="header__icon-pic">
+                            </a>
+                        </li>
+                        <li class="header__item">
+                            <a href="#!" class="header__link">
+                                <img src="{% static 'img/svg/cart.svg' %}" alt="" class="header__icon-cart">
+                            </a>
+                        </li>
+                        <li class="header__item">
+                            <a href="{% url 'account' %}" class="header_link">
+                                <img src="{% static 'img/svg/account.svg' %}" alt="" class="header__icon-account">
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+            </div>
+
+        </div>
+    </header>
+
+    <main class="main">
+        <section class="order">
+            <div class="wrapper__order">
+
+                <h1 class="order__title">
+                    Створи Власне замовлення
+                </h1>
+
+                <div class="order__procedures">
+
+                    <div class="order__procedures-film">
+                        <div class="order__procedures-window">
+                            <p class="order__procedures-film-title">
+                                Тип плівки
+                            </p>
+                        </div>
+                        <div class="options__film">
+                            <div class="film-type__item" id="type-35mm">
+                                <input type="radio" name="filmType" value="35mm" id="type-35mm" checked> 35мм
+                            </div>
+                            <div class="film-type__item" id="type-120mm">
+                                <input type="radio" name="filmType" value="120mm" id="type-120mm"> 120мм
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="order__procedures-scan">
+                        <div class="order__procedures-window">
+                            <p class="order__procedures-scan-title">
+                                Сканування
+                            </p>
+                        </div>
+                        <div class="slider-container">
+                          <input type="range" min="1" max="3" value="1" step="1" class="slider" id="scanSizeSlider" name="scanSize">
+                          <div class="slider-labels">
+                            <span class="slider-label">L</span>
+                            <span class="slider-label">XL</span>
+                            <span class="slider-label">XXL</span>
+                          </div>
+                        </div>
+                    </div>
+
+                    <div class="order__procedures-print">
+                        <div class="order__procedures-window">
+                            <p class="order__procedures-print-title">
+                                Друк
+                            </p>
+                        </div>
+                        <div class="print-option-container">
+                          <input type="radio" name="printType" value="color" id="printTypeColor" checked>
+                          <label for="printTypeColor" class="print-option color"></label>
+                          <input type="radio" name="printType" value="bw" id="printTypeBW">
+                          <label for="printTypeBW" class="print-option bw"></label>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="order__options">
+
+                    <div class="special__options">
+                        <div class="special__options-window">
+                            <p class="special__options-title">
+                                Спеціальні опції
+                            </p>
+                        </div>
+
+                        <label class="option-container">
+                          <input type="checkbox" class="option-checkbox" name="slideFilmProcessing">
+                          <span class="option-text">Slide Film Processing</span>
+                        </label>
+
+                        <label class="option-container">
+                          <input type="checkbox" class="option-checkbox" name="doNotCutNegatives">
+                          <span class="option-text">Do Not Cut Negatives</span>
+                        </label>
+
+                        <label class="option-container">
+                          <input type="checkbox" class="option-checkbox" name="crossProcessing">
+                          <span class="option-text">Cross Processing</span>
+                        </label>
+
+                        <label class="option-container">
+                          <input type="checkbox" class="option-checkbox" name="pushPull">
+                          <span class="option-text">Push/Pull</span>
+                          <select class="push-pull-select" name="pushPullValue">
+                            <option value="Push">Push</option>
+                            <option value="Pull">Pull</option>
+                          </select>
+                        </label>
+                    </div>
+
+                    <div class="print__settings">
+                        <div class="print__settings-window">
+                            <p class="print__settings-title">
+                                Налаштування друку
+                            </p>
+                        </div>
+
+                        <div class="print__options">
+                            <div class="dropdown-container">
+                              <label class="dropdown-label">Розмір знімків</label>
+                              <select class="dropdown-select" name="printSize">
+                                <option value="9x13">9x13</option>
+                                <option value="10x15">10x15</option>
+                                <option value="13х13">13х13</option>
+                                <option value="13х18">13х18</option>
+                                <option value="13х30">13х30</option>
+                                <option value="15х15">15х15</option>
+                                <option value="15х21">15х21</option>
+                                <option value="15х30">15х30</option>
+                                <option value="20х20">20х20</option>
+                                <option value="20х30">20х30</option>
+                              </select>
+                            </div>
+
+                            <div class="dropdown-container">
+                              <label class="dropdown-label">Тип паперу</label>
+                              <select class="dropdown-select" name="paperType">
+                                <option value="glossy">Глянцевий</option>
+                                <option value="matte">Матовий</option>
+                              </select>
+                            </div>
+
+                            <div class="dropdown-container">
+                              <label class="dropdown-label">Стиль полів</label>
+                              <select class="dropdown-select" name="borderStyle">
+                                <option value="noBorders">Без полів</option>
+                                <option value="whiteBorders">Білі поля</option>
+                              </select>
+                            </div>
+
+                            <div class="dropdown-container">
+                              <label class="dropdown-label">Кількість копій</label>
+                              <select class="dropdown-select" name="numberOfCopies">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                              </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="order__value">
+                    <!-- Поле для ввода количества пленок -->
+                    <div class="film-count-container">
+                      <label for="film-count" class="film-count-label">Кількість плівок до обробки</label>
+                      <input type="number" id="film-count" class="film-count-input" name="filmCount">
+                    </div>
+
+                    <!-- Поле с итоговой суммой и кнопкой "До кошика" -->
+                    <div class="total-payment-container">
+                      <span class="total-payment-label">Загалом до сплати</span>
+                      <span class="total-payment-value">ХХХ,ХХ₴</span>
+                      <button class="to-basket-button">До кошика</button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+    <div class="cart-popup">
+      <div class="cart-items-container"></div>
+      <div class="cart-total"></div>
+      <button class="cart-popup-close">Закрити</button>
+    </div>
+    <script src="{% static 'js/scripts.js' %}"></script>
+{% endblock %}
+</html>

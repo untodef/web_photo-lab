@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+{% load static %}
+<style>
+  :root {
+    --fonts-path: '{% static "fonts/" %}';
+  }
+</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://myfonts.ru/myfonts?fonts=ermilov" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <header class="header">
+        <div class="wrapper">
+
+            <div class="header__wrapper">
+
+                <div class="header__logo">
+                    <a href="{% url 'index' %}" class="header__logo-link">
+                        <img src="./static/img/svg/logo.svg" alt="ПРоявка та Сканування Фотоплівок" class="header__logo-pic">
+                    </a>
+                </div>
+
+                <nav class="header__nav">
+                    <ul class="header__list">
+                        <li class="header__item">
+                            <a href="{% url 'store' %}" class="header__link">Матеріали</a>
+                        </li>
+                        <li class="header__item">
+                            <a href="{% url 'order' %}" class="header__link">Проявка та друк</a>
+                        </li>
+                        <li class="header__item">
+                            <a href="{% url 'contacts' %}" class="header__link">Контакти</a>
+                        </li>
+                    </ul>
+
+                </nav>
+
+                <nav class="header__nav">
+                    <ul class="header__icons">
+                        <li class="header__item">
+                            <a href="#!" class="header__link">
+                                <img src="./static/img/svg/search.svg" alt="" class="header__icon-search">
+                            </a>
+                        </li>
+                        <li class="header__item">
+                            <a href="#!" class="header__link">
+                                <img src="./static/img/svg/cart.svg" alt="" class="header__icon-cart">
+                            </a>
+                        </li>
+                        <li class="header__item">
+                            <a href="{% url 'account' %}" class="header_link">
+                                <img src="./static/img/svg/account.svg" alt="" class="header__icon-account">
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+            </div>
+
+        </div>
+    </header>
+
+
+    <main class="main">
+
+        <section class="intro">
+            <div class="wrapper">
+                <h1 class="intro__title">
+                    Проявка та Сканування Фотоплівок
+                </h1>
+                <p class="intro__subtitle">
+                    У нашій фотолабораторії ваші знімки отримають нове життя! Ми використовуємо перевірені часом технології та матеріали, щоб забезпечити найвищу якість друку ваших знімків. Довірте нам свої фотоплівки та переконайтеся, що вони стануть справжньою скарбницею спогадів на багато років.
+                </p>
+                <a href="{% url 'order' %}">
+                  <button type="button" class="intro__button">
+                    Замовити обробку
+                  </button>
+                </a>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="wrapper">
+
+                <div class="features__cards">
+                    <div class="features__card">
+                        <img src="./static/img/svg/print.svg" alt="Print" class="features__card-pic">
+                        <p class="features__card-description">Ми здійснюємо друк фотографій великих розмірів для професійних фотографів, виставок і рекламного застосування, а також для любителів фотографії</p>
+                    </div>
+                    <div class="features__card">
+                        <img src="./static/img/svg/bulb.svg" alt="High Quality" class="features__card-pic">
+                        <p class="features__card-description">Високоякісне проявлення кольорових, чорно-білих, кіноплівок та слайдових плівок машинним та ручним методом</p>
+                    </div>
+                    <div class="features__card">
+                        <img src="./static/img/svg/scan.svg" alt="Scan" class="features__card-pic">
+                        <p class="features__card-description">Сканування на Noritsu HS-1800, Fujifilm Frontier SP3000, Epson Perfection v750/550, Nikon CoolScan 5000/9000 ED та Heidelberg PrimeScan 7100</p>
+                    </div>
+                </div>
+
+                <div class="features__info">
+                    <p class="features__info-description">
+                        В асортименті Ви знайдете кращі зразки професійної фотоплівки від топових виробників. У нас завжди є в наявності фотоплівка Kodak, Ilford, Fuji. Всі матеріали ми зберігаємо в морозильних камерах і ретельно стежимо за терміном придатності. Плівку ми продаємо тільки з власного складу.
+                    </p>
+                    <a href="{% url 'store' %}" class="store__link">
+                        <button type="button" class="features__button">
+                        <img src="./static/img/svg/store.svg" alt="To the store" class="features__button-pic">
+                        <p class="features__button-text">
+                            Матеріали
+                        </p>
+                    </button>
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="contact">
+            <div class="wrapper">
+                <h2 class="contact__title">
+                    Потрібна Допомога?
+                </h2>
+
+                <div class="contact-form">
+                    <div class="form">
+                        <div class="title">Заповніть цю коротку форму</div>
+                        <div class="input-container ic1">
+                          <input id="firstname" class="input" type="text" placeholder=" " />
+                          <div class="cut cut-one"></div>
+                          <label for="firstname" class="placeholder">Як до Вас звертатися?</label>
+                        </div>
+                        <div class="input-container ic2">
+                          <input id="lastname" class="input" type="text" placeholder=" " />
+                          <div class="cut cut-two"></div>
+                          <label for="lastname" class="placeholder">Ваш номер телефону або e-mail</label>
+                        </div>
+                        <div class="input-container ic3">
+                          <input id="email" class="input" type="text" placeholder=" " />
+                          <div class="cut cut-three"></div>
+                          <label for="email" class="placeholder">Як ми можемо Вам допомогти?</label>
+                        </div>
+                        <button type="text" class="form__submit">Надіслати</button>
+                    </div>
+
+                    <div class="phone">
+                        <p class="phone__text">
+                            або зателефонуйте за цим номером
+                        </p>
+                        <button type="button" class="phone__button">
+                            + 9 (87) 654 32 10
+                        </button>
+                        <p class="phone__additional">
+                            *безкоштовно на території України
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div class="cart-popup">
+      <div class="cart-items-container"></div>
+      <div class="cart-total"></div>
+      <button class="cart-popup-close">Закрити</button>
+    </div>
+    <script src="{% static 'js/scripts.js' %}"></script>
+{% endblock %}
+</html>
