@@ -4,9 +4,14 @@ from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.contrib.auth import logout
 from .models import UserProfile
-from .forms import UserProfileForm, UserProfileEditForm, CustomPasswordChangeForm, UserEditForm
+from .forms import UserProfileForm, UserProfileEditForm, CustomPasswordChangeForm, UserEditForm, BankCardForm
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.urls import reverse
+from .models import BankCard
 
 
 def index(request):
@@ -41,6 +46,8 @@ def register(request):
 def account(request):
     user = request.user
     user_profile, created = UserProfile.objects.get_or_create(user=user)
+    bank_card_form = BankCardForm()
+    bank_cards = BankCard.objects.filter(user=request.user)
     if created:
         user_profile.save()
     user_profile = request.user.userprofile
@@ -70,6 +77,8 @@ def account(request):
         "user_edit_form": user_edit_form,
         "profile_edit_form": profile_edit_form,
         "password_form": password_form,
+        "bank_card_form": bank_card_form,
+        "bank_cards": bank_cards,
     }
 
     return render(request, "account.html", context)
@@ -79,3 +88,26 @@ def sign_out(request):
     logout(request)
     # Замените 'index' на название URL-адреса вашей домашней страницы
     return redirect('index')
+
+
+@login_required
+@csrf_exempt
+def add_bank_card(request):
+    if request.method == 'POST':
+        form = BankCardForm(request.POST)
+        if form.is_valid():
+            bank_card = form.save(commit=False)
+            bank_card.user = request.user
+            bank_card.save()
+            return HttpResponseRedirect(reverse('account'))
+        else:
+            return JsonResponse({'status': 'error', 'errors': form.errors})
+    else:
+        return JsonResponse({'status': 'error', 'errors': 'Invalid request'})
+
+
+@login_required
+def delete_bank_card(request, card_id):
+    bank_card = BankCard.objects.get(id=card_id, user=request.user)
+    bank_card.delete()
+    return JsonResponse({'status': 'success'})

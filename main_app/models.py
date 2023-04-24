@@ -8,3 +8,11 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - Профиль"
+
+
+class BankCard(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    card_number = models.CharField(max_length=19)  # 16 цифр + 3 пробела
+
+    def __str__(self):
+        return f"{self.user.username}'s Bank Card: **** **** **** {self.card_number[-4:]}"

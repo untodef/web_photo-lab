@@ -13,4 +13,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('register/', views.register, name='register'),
     path('sign-out/', views.sign_out, name='sign_out'),
+    path('add-bank-card/', views.add_bank_card, name='add_bank_card'),
+    path('delete-bank-card/<int:card_id>/',
+         views.delete_bank_card, name='delete_bank_card'),
 ]

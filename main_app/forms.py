@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import UserProfile
+from .models import UserProfile, BankCard
 from django.contrib.auth.forms import PasswordChangeForm
 
 
@@ -39,3 +39,9 @@ class UserProfileEditForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ('phone_number',)
+
+
+class BankCardForm(forms.ModelForm):
+    class Meta:
+        model = BankCard
+        fields = ['card_number']

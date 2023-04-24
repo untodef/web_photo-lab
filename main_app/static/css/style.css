@@ -1992,6 +1992,7 @@ color: #FFFFFF;
   position: absolute;
   right: 10px;
   bottom: 10px;
+  cursor: pointer;
 }
 
 .sign-out-icon {
@@ -2246,4 +2247,19 @@ color: #FFFFFF;
   font-size: 15px;
   line-height: 14px;
   color: #FFFFFF;
+}
+
+
+.delete-card-btn{
+  background-color: transparent;
+  color: white;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
 }

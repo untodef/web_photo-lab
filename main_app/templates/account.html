@@ -93,7 +93,7 @@
                         <p class="account-user-phone-number">
                             {{ profile_edit_form.phone_number.value }}
                         </p>
-                        <img src="/static/img/svg/edit.svg" alt="Редагувати" class="edit-icon">
+                        <img src="{% static 'img/svg/edit.svg' %}" alt="Редагувати" class="edit-icon" data-edit="personal">
                         <img src="/static/img/svg/sign-out.svg" alt="Вийти" class="sign-out-icon" id="sign_out">
                     </div>
                     <!-- Вставьте этот код после закрывающего тега </form> -->
@@ -200,20 +200,29 @@
                                 <p class="account__content-payment__title">
                                     Платіжні засоби
                                 </p>
+                                {% for bank_card in bank_cards %}
                                 <div class="account__content-payment__method">
                                     <img src="{% static 'img/svg/bank-card-bigger.svg' %}" alt="Payment" class="payment__method-icon">
-                                    <p class="account__content-payment__method-number">
-                                        4574 **** **** 1234
-                                    </p>
+                                    <p class="account__content-payment__method-number">**** **** **** {{ bank_card.card_number|slice:"-4:" }}</p>
+                                    <button class="delete-card-btn" data-card-id="{{ bank_card.id }}">x</button>
                                 </div>
-                                <div class="account__content-payment__method">
-                                    <img src="{% static 'img/svg/bank-card-bigger.svg' %}" alt="Payment" class="payment__method-icon">
-                                    <p class="account__content-payment__method-number">
-                                        5673 **** **** 4321
-                                    </p>
-                                </div>
-                                <img src="{% static 'img/svg/edit.svg' %}" alt="Редагувати" class="edit-icon">
+                                {% endfor %}
+                                <img src="{% static 'img/svg/edit.svg' %}" alt="Редагувати" class="edit-icon" id="addBankCardBtn" data-edit="personal">
                             </div>
+
+                            <!-- Модальное окно для добавления банковской карты -->
+                            <div id="addBankCardModal" class="modal">
+                                <div class="modal-content">
+                                    <span class="close">&times;</span>
+                                    <h2>Додати банковську карту</h2>
+                                    <form method="post" action="{% url 'add_bank_card' %}">
+                                        {% csrf_token %}
+                                        {{ bank_card_form.as_p }}
+                                        <button type="submit">Зберігти</button>
+                                    </form>
+                                </div>
+                            </div>
+
 
                             <div class="account__content-delivery">
                                 <p class="account__content-delivery__title">
@@ -254,39 +263,108 @@
     </div>
     <script src="{% static 'js/scripts.js' %}"></script>
     <script>
-    // Получите модальное окно
-    var modal = document.getElementById("editModal");
+      function attachDeleteCardEventHandlers() {
+        document.querySelectorAll(".delete-card-btn").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const cardId = e.target.dataset.cardId;
 
-    // Получите кнопку, которая открывает модальное окно
-    var btn = document.getElementsByClassName("edit-icon")[0];
-
-    // Получите элемент <span>, который закрывает модальное окно
-    var span = document.getElementsByClassName("close")[0];
-
-    // Когда пользователь нажимает на кнопку, откройте модальное окно
-    btn.onclick = function() {
-      modal.style.display = "block";
-    }
-
-    // Когда пользователь нажимает на элемент <span> (x), закройте модальное окно
-    span.onclick = function() {
-      modal.style.display = "none";
-    }
-
-    // Когда пользователь нажимает в любом месте за пределами модального окна, закройте его
-    window.onclick = function(event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
+            fetch(`/delete-bank-card/${cardId}/`, {
+              method: "GET",
+              headers: {
+                "X-CSRFToken": document.querySelector('[name="csrfmiddlewaretoken"]').value,
+              },
+            })
+              .then((response) => {
+                if (response.ok) {
+                  return response.json();
+                } else {
+                  throw new Error("Ошибка при удалении карты");
+                }
+              })
+              .then((data) => {
+                if (data.status === "success") {
+                  e.target.parentElement.remove();
+                } else {
+                  alert("Произошла ошибка при удалении карты");
+                }
+              })
+              .catch((error) => {
+                console.error(error);
+                alert("Произошла ошибка при удалении карты");
+              });
+          });
+        });
       }
-    }
 
-    // Получите элемент иконки выхода
-    var signOutIcon = document.getElementById("sign_out");
+      attachDeleteCardEventHandlers();
 
-    // При нажатии на иконку выхода перейти на URL-адрес выхода
-    signOutIcon.onclick = function() {
-        window.location.href = '{% url "sign_out" %}';
-    }
+      var editModal = document.getElementById("editModal");
+      var addBankCardModal = document.getElementById("addBankCardModal");
+
+      var editBtn = document.querySelector(".edit-icon[data-edit='personal']");
+      var addBankCardBtn = document.getElementById("addBankCardBtn");
+
+      editBtn.onclick = function() {
+        editModal.style.display = "block";
+      }
+
+      addBankCardBtn.onclick = function() {
+        addBankCardModal.style.display = "block";
+      }
+
+      var closeButtons = document.getElementsByClassName("close");
+
+      for (var i = 0; i < closeButtons.length; i++) {
+        closeButtons[i].onclick = function() {
+          this.parentElement.parentElement.style.display = "none";
+        }
+      }
+
+      window.onclick = function (event) {
+        if (event.target == editModal) {
+          editModal.style.display = "none";
+        } else if (event.target == addBankCardModal) {
+          addBankCardModal.style.display = "none";
+        }
+      };
+
+      var signOutIcon = document.getElementById("sign_out");
+
+      signOutIcon.onclick = function() {
+          window.location.href = '{% url "sign_out" %}';
+      }
+
+      document.getElementById("addBankCardForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        var form = event.target;
+        var formData = new FormData(form);
+
+        fetch("add-bank-card/", {
+          method: "POST",
+          body: formData,
+          headers: {
+            "X-CSRFToken": document.querySelector('[name="csrfmiddlewaretoken"]').value,
+          },
+        })
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error("Ошибка при добавлении банковской карты");
+            }
+          })
+          .then((response) => {
+              if (response.status === 302) {
+                window.location.href = response.url;
+              } else {
+                alert("Произошла ошибка при добавлении банковской карты");
+              }
+            })
+          .catch((error) => {
+            console.error("Ошибка:", error);
+          });
+      });
     </script>
 </body>
 {% endblock %}
