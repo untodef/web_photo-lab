@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load widget_tweaks %}
 {% block nav %}
 {% endblock %}
 
@@ -228,20 +228,31 @@
                                 <p class="account__content-delivery__title">
                                     Локації доставки
                                 </p>
+                                {% for delivery_location in delivery_locations %}
                                 <div class="account__content-delivery__location">
                                     <img src="{% static 'img/svg/location.svg' %}" alt="Location" class="delivery__location-icon">
                                     <p class="account__content-delivery__location-name">
-                                        Площа Ринок, будинок 7, Львів
+                                        {{ delivery_location.delivery_address }}
                                     </p>
+                                    <button class="delete-location-btn" data-location-id="{{ delivery_location.id }}">x</button>
                                 </div>
-                                <div class="account__content-delivery__location">
-                                    <img src="{% static 'img/svg/location.svg' %}" alt="Location" class="delivery__location-icon">
-                                    <p class="account__content-delivery__location-name">
-                                        вул. Городоцька, буд. 150, кв. 13 Львів, Львівська область, 79003
-                                    </p>
-                                </div>
-                                <img src="{% static 'img/svg/edit.svg' %}" alt="Редагувати" class="edit-icon">
+                                {% endfor %}
+                                <img src="{% static 'img/svg/edit.svg' %}" alt="Редагувати" class="edit-icon" id="editDeliveryLocationIcon">
                             </div>
+
+
+                            <div id="addDeliveryLocationModal" class="modal">
+                              <div class="modal-content">
+                                <span class="close">&times;</span>
+                                <h2>Додати локацію доставки</h2>
+                                <form id="addDeliveryLocationForm" method="post">
+                                    {% csrf_token %}
+                                    {{ delivery_location_form.delivery_address|add_class:'css_location-form' }}
+                                    <button type="submit">Зберегти локацію</button>
+                                </form>
+                              </div>
+                            </div>
+
 
                             <div class="account__content-policy">
                                 <img src="{% static 'img/svg/policy.svg' %}" alt="Policy" class="policy-icon">
@@ -249,6 +260,20 @@
                                     Політика конфіденційності та юридична документація
                                 </p>
                             </div>
+                            <!-- Модальное окно с политикой конфиденциальности -->
+                            <div class="modal" id="policy-modal">
+                                <div class="modal-content">
+                                    <span class="close">&times;</span>
+                                    <h2>Політика конфіденційності та юридична документація</h2>
+                                    <!-- здесь будет содержимое политики конфиденциальности и юридической документации -->
+                                    <div class="policy-content">
+                                        <p>Текст вашей политики конфиденциальности...</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Затемнение фона -->
+                            <div class="modal-backdrop" id="modal-backdrop" style="display: none;"></div>
+
                         </div>
                     </div>
 
@@ -263,108 +288,280 @@
     </div>
     <script src="{% static 'js/scripts.js' %}"></script>
     <script>
-      function attachDeleteCardEventHandlers() {
-        document.querySelectorAll(".delete-card-btn").forEach((btn) => {
-          btn.addEventListener("click", (e) => {
-            const cardId = e.target.dataset.cardId;
+        document.addEventListener("DOMContentLoaded", function() {
+            function attachDeleteCardEventHandlers() {
+                document.querySelectorAll(".delete-card-btn").forEach((btn) => {
+                    btn.addEventListener("click", (e) => {
+                        const cardId = e.target.dataset.cardId;
 
-            fetch(`/delete-bank-card/${cardId}/`, {
-              method: "GET",
-              headers: {
-                "X-CSRFToken": document.querySelector('[name="csrfmiddlewaretoken"]').value,
-              },
-            })
-              .then((response) => {
-                if (response.ok) {
-                  return response.json();
-                } else {
-                  throw new Error("Ошибка при удалении карты");
-                }
-              })
-              .then((data) => {
-                if (data.status === "success") {
-                  e.target.parentElement.remove();
-                } else {
-                  alert("Произошла ошибка при удалении карты");
-                }
-              })
-              .catch((error) => {
-                console.error(error);
-                alert("Произошла ошибка при удалении карты");
-              });
-          });
-        });
-      }
-
-      attachDeleteCardEventHandlers();
-
-      var editModal = document.getElementById("editModal");
-      var addBankCardModal = document.getElementById("addBankCardModal");
-
-      var editBtn = document.querySelector(".edit-icon[data-edit='personal']");
-      var addBankCardBtn = document.getElementById("addBankCardBtn");
-
-      editBtn.onclick = function() {
-        editModal.style.display = "block";
-      }
-
-      addBankCardBtn.onclick = function() {
-        addBankCardModal.style.display = "block";
-      }
-
-      var closeButtons = document.getElementsByClassName("close");
-
-      for (var i = 0; i < closeButtons.length; i++) {
-        closeButtons[i].onclick = function() {
-          this.parentElement.parentElement.style.display = "none";
-        }
-      }
-
-      window.onclick = function (event) {
-        if (event.target == editModal) {
-          editModal.style.display = "none";
-        } else if (event.target == addBankCardModal) {
-          addBankCardModal.style.display = "none";
-        }
-      };
-
-      var signOutIcon = document.getElementById("sign_out");
-
-      signOutIcon.onclick = function() {
-          window.location.href = '{% url "sign_out" %}';
-      }
-
-      document.getElementById("addBankCardForm").addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        var form = event.target;
-        var formData = new FormData(form);
-
-        fetch("add-bank-card/", {
-          method: "POST",
-          body: formData,
-          headers: {
-            "X-CSRFToken": document.querySelector('[name="csrfmiddlewaretoken"]').value,
-          },
-        })
-          .then((response) => {
-            if (response.ok) {
-              return response.json();
-            } else {
-              throw new Error("Ошибка при добавлении банковской карты");
+                        fetch(`/delete-bank-card/${cardId}/`, {
+                          method: "GET",
+                          headers: {
+                            "X-CSRFToken": document.querySelector('[name="csrfmiddlewaretoken"]').value,
+                          },
+                        })
+                          .then((response) => {
+                            if (response.ok) {
+                              return response.json();
+                            } else {
+                              throw new Error("Ошибка при удалении карты");
+                            }
+                          })
+                          .then((data) => {
+                            console.log(data);
+                            if (data.status === "success") {
+                              e.target.parentElement.remove();
+                            } else {
+                              alert("Произошла ошибка при удалении карты");
+                            }
+                          })
+                          .catch((error) => {
+                            console.error(error);
+                            alert("Произошла ошибка при удалении карты");
+                          });
+                        });
+                });
             }
-          })
-          .then((response) => {
-              if (response.status === 302) {
-                window.location.href = response.url;
-              } else {
-                alert("Произошла ошибка при добавлении банковской карты");
+
+            attachDeleteCardEventHandlers();
+
+            var editModal = document.getElementById("editModal");
+            var addBankCardModal = document.getElementById("addBankCardModal");
+
+            var editBtn = document.querySelector(".edit-icon[data-edit='personal']");
+            var addBankCardBtn = document.getElementById("addBankCardBtn");
+
+            editBtn.onclick = function() {
+              editModal.style.display = "block";
+            }
+
+            addBankCardBtn.onclick = function() {
+              addBankCardModal.style.display = "block";
+            }
+
+            var closeButtons = document.getElementsByClassName("close");
+
+            for (var i = 0; i < closeButtons.length; i++) {
+              closeButtons[i].onclick = function() {
+                this.parentElement.parentElement.style.display = "none";
               }
-            })
-          .catch((error) => {
-            console.error("Ошибка:", error);
-          });
-      });
+            }
+
+            window.onclick = function (event) {
+              if (event.target == editModal) {
+                editModal.style.display = "none";
+              } else if (event.target == addBankCardModal) {
+                addBankCardModal.style.display = "none";
+              }
+            };
+
+            var signOutIcon = document.getElementById("sign_out");
+
+            signOutIcon.onclick = function() {
+                window.location.href = '{% url "sign_out" %}';
+            }
+
+
+            var addBankCardForm = document.getElementById("addBankCardForm");
+
+            if (addBankCardForm) {
+                document.getElementById("addBankCardForm").addEventListener("submit", function (event) {
+                    event.preventDefault();
+
+                    var form = event.target;
+                    var formData = new FormData(form);
+
+                    fetch("add-bank-card/", {
+                      method: "POST",
+                      body: formData,
+                      headers: {
+                        "X-CSRFToken": document.querySelector('[name="csrfmiddlewaretoken"]').value,
+                      },
+                    })
+                    .then((response) => {
+                      if (response.ok) {
+                        return response.json();
+                      } else {
+                        throw new Error("Ошибка при добавлении банковской карты");
+                      }
+                    })
+                    .then((response) => {
+                        if (response.status === 302) {
+                          window.location.href = response.url;
+                        } else {
+                          alert("Произошла ошибка при добавлении банковской карты");
+                        }
+                      })
+                    .catch((error) => {
+                      console.error("Ошибка:", error);
+                    });
+                });
+            }
+        });
+
+        // В вашем файле account.js
+        const addDeliveryLocationModal = document.getElementById("addDeliveryLocationModal");
+        const openModalButton = document.getElementById("editDeliveryLocationIcon"); // Изменено на id
+        const closeModalButton = document.querySelector(".close");
+
+        document.getElementById("addDeliveryLocationForm").addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          var form = event.target;
+          var formData = new FormData(form);
+
+          // Остальной код отправки формы
+        });
+
+
+        function createDeliveryLocationElement(address) {
+            const locationWrapper = document.createElement("div");
+            locationWrapper.classList.add("account__content-delivery__location");
+
+            const locationIcon = document.createElement("img");
+            locationIcon.src = "{% static 'img/svg/location.svg' %}";
+            locationIcon.alt = "Location";
+            locationIcon.classList.add("delivery__location-icon");
+
+            const locationName = document.createElement("p");
+            locationName.classList.add("account__content-delivery__location-name");
+            locationName.textContent = address;
+
+            const editIcon = document.createElement("img");
+            editIcon.src = "{% static 'img/svg/edit.svg' %}";
+            editIcon.alt = "Редагувати";
+            editIcon.classList.add("edit-icon");
+
+            locationWrapper.appendChild(locationIcon);
+            locationWrapper.appendChild(locationName);
+            locationWrapper.appendChild(editIcon);
+
+            return locationWrapper;
+        }
+
+
+        openModalButton.addEventListener("click", function () {
+          addDeliveryLocationModal.style.display = "block";
+        });
+
+        closeModalButton.addEventListener("click", function () {
+          addDeliveryLocationModal.style.display = "none";
+        });
+
+        window.addEventListener("click", function (event) {
+          if (event.target == addDeliveryLocationModal) {
+            addDeliveryLocationModal.style.display = "none";
+          }
+        });
+
+
+
+      // В вашем файле account.js
+        document.getElementById("addDeliveryLocationForm").addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          var form = event.target;
+          var formData = new FormData(form);
+
+        fetch("/add-delivery-location/", {
+            method: "POST",
+            body: formData,
+            headers: {
+                "X-CSRFToken": document.querySelector('[name="csrfmiddlewaretoken"]').value,
+            },
+        })
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            response.json().then((data) => {
+              console.error("Ошибка сервера:", data);
+            });
+            throw new Error("Ошибка при добавлении адреса доставки");
+          }
+        })
+        .then((data) => {
+            if (data.status === "success") {
+                const deliveryLocationList = document.querySelector(".account__content-delivery");
+
+                const newDeliveryLocation = document.createElement("div");
+                newDeliveryLocation.classList.add("account__content-delivery__location");
+
+                const locationIcon = document.createElement("img");
+                locationIcon.src = "{% static 'img/svg/location.svg' %}";
+                locationIcon.alt = "Location";
+                locationIcon.classList.add("delivery__location-icon");
+
+                const locationName = document.createElement("p");
+                locationName.classList.add("account__content-delivery__location-name");
+                locationName.textContent = data.delivery_address;
+
+                const editIcon = document.createElement("img");
+                editIcon.src = "{% static 'img/svg/edit.svg' %}";
+                editIcon.alt = "Редагувати";
+                editIcon.classList.add("edit-icon");
+
+                newDeliveryLocation.appendChild(locationIcon);
+                newDeliveryLocation.appendChild(locationName);
+                newDeliveryLocation.appendChild(editIcon);
+
+                deliveryLocationList.insertBefore(newDeliveryLocation, document.getElementById("editDeliveryLocationIcon"));
+            } else {
+                alert("Произошла ошибка. Пожалуйста, попробуйте еще раз.");
+            }
+        })
+
+
+
+        .catch((error) => {
+          console.error("Error:", error);
+          alert("Произошла ошибка. Пожалуйста, попробуйте еще раз.");
+        });
+
+        });
+
+        document.getElementById("editDeliveryLocationIcon").addEventListener("click", function() {
+          console.log("Кнопка нажата");
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            function attachDeleteLocationEventHandlers() {
+                document.querySelectorAll(".delete-location-btn").forEach((btn) => {
+                    btn.addEventListener("click", (e) => {
+                        const locationId = e.target.dataset.locationId;
+
+                        fetch(`/delete-delivery-location/${locationId}/`, {
+                            method: "GET",
+                            headers: {
+                                "X-CSRFToken": document.querySelector('[name="csrfmiddlewaretoken"]').value,
+                            },
+                        })
+                        .then((response) => {
+                            if (response.ok) {
+                                return response.json();
+                            } else {
+                                throw new Error("Ошибка при удалении адреса доставки");
+                            }
+                        })
+                        .then((data) => {
+                            if (data.status === "success") {
+                                e.target.parentElement.remove();
+                            } else {
+                                alert("Произошла ошибка при удалении адреса доставки");
+                            }
+                        })
+                        .catch((error) => {
+                            console.error(error);
+                            alert("Произошла ошибка при удалении адреса доставки");
+                        });
+                    });
+                });
+            }
+
+            attachDeleteLocationEventHandlers();
+            // ... остальной код
+        });
+
     </script>
 </body>
 {% endblock %}

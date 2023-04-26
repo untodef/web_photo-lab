@@ -2022,7 +2022,7 @@ color: #FFFFFF;
   margin: 15% auto; /* 15% от верхней части и центрировать */
   padding: 20px;
   border: 1px solid #888;
-  width: 80%; /* Можно изменить на что-то меньшее, если хотите */
+  width: 40%; /* Можно изменить на что-то меньшее, если хотите */
 }
 
 /* Кнопка закрытия модального окна */
@@ -2177,7 +2177,7 @@ color: #FFFFFF;
 }
 
 .account__content-payment__method-number{
-  width: 164px;
+  width: 114px;
   font-family: 'Nunito';
   font-style: normal;
   font-weight: 900;
@@ -2185,6 +2185,7 @@ color: #FFFFFF;
   line-height: 18px;
   color: #FFFFFF;
   margin-left: 15px;
+  margin-right: 20px;
 }
 
 
@@ -2215,7 +2216,7 @@ color: #FFFFFF;
 }
 
 .account__content-delivery__location-name{
-  width: 164px;
+  width: 158px;
   font-family: 'Nunito';
   font-style: normal;
   font-weight: 900;
@@ -2223,6 +2224,7 @@ color: #FFFFFF;
   line-height: 18px;
   color: #FFFFFF;
   margin-left: 15px;
+  margin-right: 20px;
 }
 
 
@@ -2251,6 +2253,21 @@ color: #FFFFFF;
 
 
 .delete-card-btn{
+  background-color: transparent;
+  color: white;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+
+.delete-location-btn{
   background-color: transparent;
   color: white;
   font-size: 20px;

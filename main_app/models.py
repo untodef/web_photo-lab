@@ -16,3 +16,11 @@ class BankCard(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s Bank Card: **** **** **** {self.card_number[-4:]}"
+
+
+class DeliveryLocation(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    delivery_address = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.address

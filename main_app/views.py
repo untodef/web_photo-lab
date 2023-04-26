@@ -12,6 +12,8 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
 from .models import BankCard
+from .forms import DeliveryLocationForm
+from .models import DeliveryLocation
 
 
 def index(request):
@@ -48,6 +50,8 @@ def account(request):
     user_profile, created = UserProfile.objects.get_or_create(user=user)
     bank_card_form = BankCardForm()
     bank_cards = BankCard.objects.filter(user=request.user)
+    delivery_location_form = DeliveryLocationForm()
+    delivery_locations = DeliveryLocation.objects.filter(user=request.user)
     if created:
         user_profile.save()
     user_profile = request.user.userprofile
@@ -79,6 +83,8 @@ def account(request):
         "password_form": password_form,
         "bank_card_form": bank_card_form,
         "bank_cards": bank_cards,
+        'delivery_location_form': delivery_location_form,
+        'delivery_locations': delivery_locations,
     }
 
     return render(request, "account.html", context)
@@ -111,3 +117,32 @@ def delete_bank_card(request, card_id):
     bank_card = BankCard.objects.get(id=card_id, user=request.user)
     bank_card.delete()
     return JsonResponse({'status': 'success'})
+
+
+@login_required
+@csrf_exempt
+def add_delivery_location(request):
+    if request.method == "POST":
+        form = DeliveryLocationForm(request.POST)
+        # В представлении добавления адреса доставки
+        if form.is_valid():
+            delivery_location = form.save(commit=False)
+            delivery_location.user = request.user
+            delivery_location.save()
+            return JsonResponse({"status": "success", "delivery_address": delivery_location.delivery_address})
+        else:
+            return JsonResponse({'status': 'error', 'errors': form.errors})
+    else:
+        return JsonResponse({'status': 'error', 'errors': 'Invalid request'})
+
+
+@login_required
+@csrf_exempt
+def delete_delivery_location(request, location_id):
+    try:
+        delivery_location = DeliveryLocation.objects.get(
+            id=location_id, user=request.user)
+        delivery_location.delete()
+        return JsonResponse({"status": "success"})
+    except DeliveryLocation.DoesNotExist:
+        return JsonResponse({"status": "error", "message": "Адрес доставки не найден"})
