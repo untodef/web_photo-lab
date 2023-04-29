@@ -13,7 +13,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
 from .models import BankCard
 from .forms import DeliveryLocationForm
-from .models import DeliveryLocation
+from .models import DeliveryLocation, Order
+from .forms import OrderForm
+from django.views.decorators.http import require_POST
 
 
 def index(request):
@@ -52,6 +54,7 @@ def account(request):
     bank_cards = BankCard.objects.filter(user=request.user)
     delivery_location_form = DeliveryLocationForm()
     delivery_locations = DeliveryLocation.objects.filter(user=request.user)
+    orders = Order.objects.filter(user=request.user)
     if created:
         user_profile.save()
     user_profile = request.user.userprofile
@@ -85,9 +88,10 @@ def account(request):
         "bank_cards": bank_cards,
         'delivery_location_form': delivery_location_form,
         'delivery_locations': delivery_locations,
+        'orders': orders,
     }
 
-    return render(request, "account.html", context)
+    return render(request, 'account.html', context)
 
 
 def sign_out(request):
@@ -146,3 +150,58 @@ def delete_delivery_location(request, location_id):
         return JsonResponse({"status": "success"})
     except DeliveryLocation.DoesNotExist:
         return JsonResponse({"status": "error", "message": "Адрес доставки не найден"})
+
+
+@login_required
+@csrf_exempt
+def create_order(request):
+    if request.method == 'POST':
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            order = form.save(commit=False)
+            order.user = request.user
+            order.save()
+            return JsonResponse({'status': 'success', 'message': 'Заказ успешно добавлен'})
+        else:
+            return JsonResponse({'status': 'error', 'errors': form.errors})
+    else:
+        return JsonResponse({'status': 'error', 'errors': 'Invalid request'})
+
+
+@login_required
+def order_details(request, order_id):
+    try:
+        order = Order.objects.get(pk=order_id, user=request.user)
+        order_details = {
+            'Номер замовлення': order.pk,
+            'Кількість плівок': order.film_count,
+            'Тип плівки': order.film_type,
+            'Розмір скану': order.scan_size,
+            'Колірність': order.print_type,
+            'Обробка слайдової плівки': order.slide_film_processing,
+            'Не нарізати плівку': order.do_not_cut_negatives,
+            'Кросс обробка': order.cross_processing,
+            'Пуш або пул обробка': order.push_pull,
+            'Розмір друку': order.print_size,
+            'Тип друку': order.paper_type,
+            'Стиль друку': order.border_style,
+            'Кількість копій': order.number_of_copies,
+            'Загальна ціна': order.total_price,
+
+        }
+        return JsonResponse({'status': 'success', 'order_details': order_details})
+    except Order.DoesNotExist:
+        return JsonResponse({'status': 'error', 'errors': 'Order not found'})
+
+
+@csrf_exempt
+@require_POST
+def delete_order(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+        order.delete()
+        return JsonResponse({"status": "success"})
+    except Order.DoesNotExist:
+        return JsonResponse({"status": "error", "errors": f"Order with id {order_id} does not exist"})
+    except Exception as e:
+        return JsonResponse({"status": "error", "errors": str(e)})

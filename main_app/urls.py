@@ -20,4 +20,9 @@ urlpatterns = [
          name='add_delivery_location'),
     path("delete-delivery-location/<int:location_id>/",
          views.delete_delivery_location, name="delete_delivery_location"),
+    path('create-order/', views.create_order, name='create_order'),
+    path('order_details/<int:order_id>/',
+         views.order_details, name='order_details'),
+    path('delete_order/<int:order_id>/',
+         views.delete_order, name='delete_order'),
 ]

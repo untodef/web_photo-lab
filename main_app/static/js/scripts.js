@@ -274,6 +274,7 @@ const prices = {
     doNotCutNegatives: 0,
     crossProcessing: 70,
     pushPull: 20,
+    pushPullValue: 0
   },
   printSize: {
     "9x13": 10,
@@ -318,7 +319,8 @@ const order = {
     slideFilmProcessing: false,
     doNotCutNegatives: false,
     crossProcessing: false,
-    pushPull: "",
+    pushPull: false,
+    pushPullValue: "Push"
   },
   printSize: "9x13",
   paperType: "glossy",
@@ -403,6 +405,90 @@ document.addEventListener("DOMContentLoaded", () => {
   updateTotal();
 });
 
+const isUserLoggedIn = document.querySelector("body").dataset.isLoggedIn === "True";
+
+
+function submitOrder() {
+  const data = new FormData();
+  data.append('film_type', order.filmType);
+  data.append('scan_size', order.scanSize);
+  data.append('print_type', order.printType);
+  data.append('slide_film_processing', order.specialOptions.slideFilmProcessing);
+  data.append('do_not_cut_negatives', order.specialOptions.doNotCutNegatives);
+  data.append('cross_processing', order.specialOptions.crossProcessing);
+  data.append('push_pull', order.specialOptions.pushPullValue || (order.specialOptions.pushPull ? 'Push' : ""));
+  data.append('print_size', order.printSize);
+  data.append('paper_type', order.paperType);
+  data.append('border_style', order.borderStyle);
+  data.append('number_of_copies', order.numberOfCopies);
+  data.append('film_count', order.filmCount);
+  data.append('total_price', Number(document.querySelector(".total-payment-value").textContent.replace('₴', '')));
+
+  fetch("/create-order/", {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": getCookie("csrftoken"),
+    },
+    body: data,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      if (data.status === "success") {
+        alert("Заказ успешно добавлен");
+      } else {
+        alert("Ошибка при добавлении заказа");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
+
+
+
+function setupBasketButton() {
+  const toBasketButton = document.querySelector(".to-basket-button");
+
+  if (toBasketButton) {
+    toBasketButton.addEventListener("click", (event) => {
+      event.preventDefault();
+
+      if (isUserLoggedIn) {
+        submitOrder();
+      } else {
+        window.location.href = "/accounts/login/";
+      }
+    });
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  registerEventListeners();
+  updateTotal();
+  setupBasketButton();
+});
+
+
+
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== "") {
+    const cookies = document.cookie.split("; ");
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === name + "=") {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+
+
 
 
 
@@ -451,7 +537,7 @@ document.querySelectorAll(".add-to-cart-btn").forEach((button) => {
   });
 });
 
-const toBasketButton = document.querySelector(".to-basket-button");
+/*const toBasketButton = document.querySelector(".to-basket-button");
 if (toBasketButton) {
   toBasketButton.addEventListener("click", () => {
     const orderTotal = parseFloat(document.querySelector(".total-payment-value").textContent);
@@ -462,7 +548,7 @@ if (toBasketButton) {
 
     addItemToCart(item);
   });
-}
+}*/
 
 
 
@@ -523,7 +609,6 @@ document.querySelector(".header__icon-cart").addEventListener("click", () => {
 document.querySelector(".cart-popup-close").addEventListener("click", () => {
   document.querySelector(".cart-popup").classList.remove("visible");
 });
-
 
 
 

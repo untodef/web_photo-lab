@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href="https://myfonts.ru/myfonts?fonts=ermilov" rel="stylesheet" type="text/css" />
 </head>
-<body>
+<body data-is-logged-in="{{ user.is_authenticated }}">
     <header class="header">
         <div class="wrapper">
 

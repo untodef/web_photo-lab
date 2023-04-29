@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import UserProfile, BankCard
 from django.contrib.auth.forms import PasswordChangeForm
 from .models import DeliveryLocation
+from .models import Order
 
 
 class CustomPasswordChangeForm(PasswordChangeForm):
@@ -52,3 +53,24 @@ class DeliveryLocationForm(forms.ModelForm):
     class Meta:
         model = DeliveryLocation
         fields = ['delivery_address']
+
+
+class OrderForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = [
+            'film_type',
+            'scan_size',
+            'print_type',
+            'slide_film_processing',
+            'do_not_cut_negatives',
+            'cross_processing',
+            'push_pull',
+            'print_size',
+            'paper_type',
+            'border_style',
+            'number_of_copies',
+            'film_count',
+            'total_price',
+        ]
+  # обновите это
