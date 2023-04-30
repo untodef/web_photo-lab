@@ -50,11 +50,6 @@
                     <ul class="header__icons">
                         <li class="header__item">
                             <a href="#!" class="header__link">
-                                <img src="{% static 'img/svg/search.svg' %}" alt="" class="header__icon-pic">
-                            </a>
-                        </li>
-                        <li class="header__item">
-                            <a href="#!" class="header__link">
                                 <img src="{% static 'img/svg/cart.svg' %}" alt="" class="header__icon-cart">
                             </a>
                         </li>
@@ -99,18 +94,21 @@
                     <!-- Вставьте этот код после закрывающего тега </form> -->
                     <div id="editModal" class="modal">
                         <div class="modal-content">
+                            <p class="modal_title">
+                                Редагування персональних даних
+                            </p>
                             <span class="close">&times;</span>
-                            <form method="post" action="{% url 'account' %}" enctype="multipart/form-data">
+                            <form class="account__modal" method="post" action="{% url 'account' %}" enctype="multipart/form-data">
                                 {% csrf_token %}
                                 {{ user_edit_form.as_p }}
                                 {{ profile_edit_form.as_p }}
-                                <button type="submit">Зберігти зміни</button>
+                                <button class="modal_button" type="submit">Зберігти зміни</button>
                             </form>
                             <!-- Форма изменения пароля -->
-                            <form method="post">
+                            <form class="account__modal-password" method="post">
                                 {% csrf_token %}
                                 {{ password_form.as_p }}
-                                <button type="submit">Змінити пароль</button>
+                                <button class="modal_button" type="submit">Змінити пароль</button>
                             </form>
                         </div>
                     </div>
@@ -123,25 +121,32 @@
                             <p class="account__content-orders__title">
                                 Ваші замовлення
                             </p>
-                            <div class="account__content-orders-cards">
-                                {% for order in orders %}
-                                    <div class="account__content-orders-info-card" data-order-id="{{ order.pk }}">
-                                        <div class="order-card__header">
-                                            <img src="{% static 'img/svg/order-complete.svg' %}" alt="Completed" class="order-icon">
-                                            <span class="order-number">{{ order.pk }}</span>
+                            <div class="account__content-orders-cards-wrapper">
+                                <button class="scroll-btn scroll-left">&lt;</button>
+                                <div class="account__content-orders-cards">
+                                    {% for order in orders %}
+                                        <div class="account__content-orders-info-card" data-order-id="{{ order.pk }}">
+                                            <div class="order-card__header">
+                                                <img src="{% static 'img/svg/order_in_process.svg' %}" alt="Completed" class="order-icon">
+                                                <span class="order-number">{{ order.pk }}</span>
+                                            </div>
+                                            <div class="order-card__status">
+                                                Створено
+                                            </div>
+                                            <div class="payment-status">
+                                                Не оплачено
+                                            </div>
+                                            <div class="order-card__footer">
+                                                <span class="order-amount">{{ order.total_price }}₴</span>
+                                                <img src="{% static 'img/svg/bank-card.svg' %}" alt="Payment" class="payment-icon">
+                                            </div>
                                         </div>
-                                        <div class="order-card__status">
-                                            Створено:
-                                        </div>
-                                        <div class="order-card__footer">
-                                            <span class="order-amount">{{ order.total_price }}₴</span>
-                                            <img src="{% static 'img/svg/bank-card.svg' %}" alt="Payment" class="payment-icon">
-                                            <span class="payment-status">Не сплачено</span>
-                                        </div>
-                                    </div>
-                                {% endfor %}
+                                    {% endfor %}
+                                </div>
+                                <button class="scroll-btn scroll-right">&gt;</button>
                             </div>
                         </div>
+
                         <div id="orderDetailsModal" class="modal">
                           <div class="modal-content">
                             <span class="close">&times;</span>
@@ -171,11 +176,13 @@
                             <div id="addBankCardModal" class="modal">
                                 <div class="modal-content">
                                     <span class="close">&times;</span>
-                                    <h2>Додати банковську карту</h2>
-                                    <form method="post" action="{% url 'add_bank_card' %}">
+                                    <p class="modal_title">
+                                        Додати банковську карту
+                                    </p>
+                                    <form class="account__modal" method="post" action="{% url 'add_bank_card' %}">
                                         {% csrf_token %}
                                         {{ bank_card_form.as_p }}
-                                        <button type="submit">Зберігти</button>
+                                        <button class="modal_button" type="submit">Зберігти</button>
                                     </form>
                                 </div>
                             </div>
@@ -201,11 +208,13 @@
                             <div id="addDeliveryLocationModal" class="modal">
                               <div class="modal-content">
                                 <span class="close">&times;</span>
-                                <h2>Додати локацію доставки</h2>
-                                <form id="addDeliveryLocationForm" method="post">
+                                <p class="modal_title">
+                                    Додати локацію доставки
+                                </p>
+                                <form class="account__modal" id="addDeliveryLocationForm" method="post">
                                     {% csrf_token %}
                                     {{ delivery_location_form.delivery_address|add_class:'css_location-form' }}
-                                    <button type="submit">Зберегти локацію</button>
+                                    <button class="modal_button" id="modal_location_button" type="submit">Зберегти локацію</button>
                                 </form>
                               </div>
                             </div>
@@ -221,8 +230,7 @@
                             <div class="modal" id="policy-modal">
                                 <div class="modal-content">
                                     <span class="close">&times;</span>
-                                    <h2 class="policy-content-title">Політика конфіденційності Flashback Saloon</h2>
-                                    <!-- здесь будет содержимое политики конфиденциальности и юридической документации -->
+                                    <h2 class="policy-content-title">Політика конфіденційності</h2>
                                     <div class="policy-content">
                                         <p class="policy-content-general">
                                             Дата набуття чинності: [вставити дату].
@@ -684,6 +692,31 @@
             deleteOrder(orderId);
         });
 
+        document.addEventListener("DOMContentLoaded", function() {
+            const scrollLeftButton = document.querySelector(".scroll-left");
+            const scrollRightButton = document.querySelector(".scroll-right");
+            const ordersCards = document.querySelector(".account__content-orders-cards");
+
+            // Функция для прокрутки влево
+            function scrollLeft() {
+                ordersCards.scrollBy({
+                    left: -ordersCards.clientWidth,
+                    behavior: "smooth"
+                });
+            }
+
+            // Функция для прокрутки вправо
+            function scrollRight() {
+                ordersCards.scrollBy({
+                    left: ordersCards.clientWidth,
+                    behavior: "smooth"
+                });
+            }
+
+            // Добавьте обработчики событий для кнопок
+            scrollLeftButton.addEventListener("click", scrollLeft);
+            scrollRightButton.addEventListener("click", scrollRight);
+        });
 
     </script>
 </body>

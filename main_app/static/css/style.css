@@ -1393,7 +1393,7 @@ color: #FFFFFF;
 }
 
 .store__title{
-  width: 1020px;
+  width: 950px;
   height: 58px;
   font-family: 'Ermilov', arial;
   font-style: normal;
@@ -2023,6 +2023,7 @@ color: #FFFFFF;
   padding: 20px;
   border: 1px solid #888;
   width: 40%; /* Можно изменить на что-то меньшее, если хотите */
+  border-radius: 10px;
 }
 
 /* Кнопка закрытия модального окна */
@@ -2065,7 +2066,7 @@ color: #FFFFFF;
 .account__content-orders-cards{
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
 .account__content-orders-info-card {
@@ -2077,6 +2078,11 @@ color: #FFFFFF;
   flex-direction: column;
   justify-content: space-between;
   padding: 10px;
+  margin-right: 20px;
+}
+
+.account__content-orders-info-card:last-child{
+  margin-right: 0;
 }
 
 .order-card__header {
@@ -2106,15 +2112,7 @@ color: #FFFFFF;
   color: #FFFFFF;
 }
 
-.order-card__date {
-  width: 103px;
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 700;
-  font-size: 13px;
-  line-height: 18px;
-  color: #FFFFFF;
-}
+
 
 .order-card__footer {
   display: flex;
@@ -2135,7 +2133,7 @@ color: #FFFFFF;
 
 
 .payment-status {
-  width: 52px;
+  width: 66px;
   font-family: 'Nunito';
   font-style: normal;
   font-weight: 900;
@@ -2143,6 +2141,33 @@ color: #FFFFFF;
   line-height: 14px;
   color: #FFFFFF;
 }
+
+/* Добавьте стили для кнопок и обертки карточек */
+.account__content-orders-cards-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.scroll-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+
+.account__content-orders-cards {
+    display: flex;
+    flex-wrap: nowrap; /* Запретите перенос элементов на следующую строку */
+    overflow-x: hidden; /* Скройте горизонтальный скроллбар */
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+}
+
+.account__content-orders-info-card {
+    scroll-snap-align: start;
+}
+
 
 
 .account__content-payment-delivery-policy{
@@ -2295,11 +2320,12 @@ color: #FFFFFF;
 }
 
 .modal-content {
-    background-color: #fefefe;
+    background-color: rgba(21, 21, 21, 0.95);
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
+    width: 32%;
+    border-radius: 10px;
 }
 
 .close {
@@ -2326,4 +2352,66 @@ color: #FFFFFF;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
+}
+
+.account__modal{
+  font-family: 'Nunito', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  color: #FFFFFF;
+}
+
+.account__modal-password{
+  font-family: 'Nunito', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  color: #FFFFFF;
+  margin-top: 30px;
+}
+
+.modal_button{
+  background: #b633208c;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  color: #FFFFFF;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  margin-top: 10px;
+}
+
+#modal_location_button{
+  margin-top: 0;
+  margin-left: 20px;
+}
+
+.modal_title{
+  font-family: 'Nunito', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  color: #FFFFFF;
+  margin-bottom: 20px;
+}
+
+.policy-content-title{
+  font-family: 'Nunito', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  color: #FFFFFF;
+  margin-bottom: 20px;
+}
+
+.policy-content-general{
+  font-family: 'Nunito', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  color: #FFFFFF;
+  margin-bottom: 20px;
 }

@@ -1,10 +1,13 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block content %}
-  <h2>Вход</h2>
+  <link rel="stylesheet" href="{% static 'css/login-registration.css' %}">
+  <img id="login-logo" src="{% static 'img/svg/logo.svg' %}" alt="Logo">
+  <h2 class="login_title">Вхід</h2>
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Войти</button>
+    <button class="submit-button" type="submit">Увійти</button>
   </form>
+  <button class="register-button" onclick="location.href='{% url 'register' %}'">Зареєструватися</button>
 {% endblock %}

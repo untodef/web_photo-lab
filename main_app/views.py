@@ -54,7 +54,7 @@ def account(request):
     bank_cards = BankCard.objects.filter(user=request.user)
     delivery_location_form = DeliveryLocationForm()
     delivery_locations = DeliveryLocation.objects.filter(user=request.user)
-    orders = Order.objects.filter(user=request.user)
+    orders = Order.objects.filter(user=request.user).order_by('-pk')
     if created:
         user_profile.save()
     user_profile = request.user.userprofile

@@ -364,7 +364,7 @@ function updateTotal() {
 
   const totalPaymentValueElement = document.querySelector(".total-payment-value");
   if (totalPaymentValueElement) {
-    totalPaymentValueElement.textContent = `${total.toFixed(2)}₴`;
+    totalPaymentValueElement.textContent = `${total.toFixed(2)} ₴`;
   }
 }
 
@@ -435,9 +435,9 @@ function submitOrder() {
     .then((data) => {
       console.log(data);
       if (data.status === "success") {
-        alert("Заказ успешно добавлен");
+        alert("Замовлення успішно додано");
       } else {
-        alert("Ошибка при добавлении заказа");
+        alert("Помилка при додані замовлення");
       }
     })
     .catch((error) => {
@@ -537,20 +537,6 @@ document.querySelectorAll(".add-to-cart-btn").forEach((button) => {
   });
 });
 
-/*const toBasketButton = document.querySelector(".to-basket-button");
-if (toBasketButton) {
-  toBasketButton.addEventListener("click", () => {
-    const orderTotal = parseFloat(document.querySelector(".total-payment-value").textContent);
-    const item = {
-      name: "Замовлення",
-      price: orderTotal,
-    };
-
-    addItemToCart(item);
-  });
-}*/
-
-
 
 
 function displayCart() {
@@ -609,7 +595,5 @@ document.querySelector(".header__icon-cart").addEventListener("click", () => {
 document.querySelector(".cart-popup-close").addEventListener("click", () => {
   document.querySelector(".cart-popup").classList.remove("visible");
 });
-
-
 
 

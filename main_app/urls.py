@@ -1,6 +1,7 @@
 from django.urls import path, include
 from django.contrib import admin
 from . import views
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path('', views.index, name='home'),
@@ -26,3 +27,5 @@ urlpatterns = [
     path('delete_order/<int:order_id>/',
          views.delete_order, name='delete_order'),
 ]
+
+urlpatterns += staticfiles_urlpatterns()

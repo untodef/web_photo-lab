@@ -1,0 +1,67 @@
+/* Цвет фона */
+body {
+  background-color: rgba(0, 0, 0, 0.95);
+}
+
+/* Центрирование элементов */
+#content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* Логотип */
+#login-logo {
+  margin-bottom: 2rem;
+}
+
+.login_title, .registration_title{
+  font-family: 'Nunito', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  color: #FFFFFF;
+}
+
+/* Стили текста */
+h2, form p, form label {
+  font-family: 'Nunito', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  color: #FFFFFF;
+}
+
+li{
+  color: white;
+}
+
+/* Стили кнопок */
+button {
+  background: #b633208c;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  color: #FFFFFF;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+}
+
+button[type="submit"] {
+  margin-top: 1rem;
+}
+
+/* Кнопка "Зареєструватися" */
+.register-button {
+  margin-top: 1rem;
+}
+
+.submit-button {
+  margin: 1rem auto;
+  display: block;
+}
+

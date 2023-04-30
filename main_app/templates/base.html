@@ -6,13 +6,7 @@
     <title>{% block title %}Default Title{% endblock %}</title>
 </head>
 <body>
-    <nav>
-        {% block nav %}
-        <ul class="nav-links">
-            <li><a href="{% url 'register' %}">Register</a></li>
-        </ul>
-        {% endblock %}
-    </nav>
+
     <div id="content">
         {% block content %}
         {% endblock %}

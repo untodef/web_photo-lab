@@ -1,10 +1,11 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block content %}
-  <h2>Регистрация</h2>
+  <link rel="stylesheet" href="{% static 'css/login-registration.css' %}">
+  <h2 class="registration_title">Реєстрація</h2>
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Зарегистрироваться</button>
+    <button class="submit-button" type="submit">Зареєструватися</button>
   </form>
 {% endblock %}
